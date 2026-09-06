@@ -11,8 +11,8 @@ build/
 .vscode/
 *.swp
 
-# H2 database files
-data/
+# H2 database files (H2 file DB lives at ./data/ — not the Java package com.breachguard.data)
+/data/
 
 # Maven
 .mvn/wrapper/maven-wrapper.jar

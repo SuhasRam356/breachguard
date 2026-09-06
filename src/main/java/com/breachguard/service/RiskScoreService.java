@@ -4,9 +4,9 @@ import com.breachguard.dto.BreachInfo;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -68,9 +68,7 @@ public class RiskScoreService {
             double multiplier = 1.0;
             LocalDate d = parseDate(b);
             if (d != null) {
-                long days = Period.between(d, today).getDays()
-                        + Period.between(d, today).getMonths() * 30L
-                        + Period.between(d, today).getYears() * 365L;
+                long days = ChronoUnit.DAYS.between(d, today);
                 double years = days / 365.25;
                 if (years <= 1) multiplier = 1.5;
                 else if (years <= 2) multiplier = 1.3;
