@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head><title>BreachGuard — Beyond Breach Notification</title></head>
+<body>
+<section layout:fragment="content">
+<div class="hero">
+  <h1>🛡️ BreachGuard</h1>
+  <p class="lead mt-3">Beyond breach notification — personal risk scoring, remediation
+    guidance, honeypot canary tokens, India-specific threat intel, and DPDP Act tools.
+    All in one educational dashboard.</p>
+  <a th:href="@{/register}" class="btn btn-neon btn-lg mt-4 me-2">Get Started Free</a>
+  <a th:href="@{/india}" class="btn btn-outline-light btn-lg mt-4">🇮🇳 India Feed</a>
+</div>
+
+<div class="row g-4 mt-4">
+  <div class="col-md-4">
+    <div class="card card-glow p-4 h-100">
+      <div class="feature-icon mb-2">🔍</div>
+      <h5>Email Breach Check</h5>
+      <p class="text-muted small">Look up any email address against multiple breach databases.
+        Powered by LeakCheck (free) &amp; optional HIBP.</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-glow p-4 h-100">
+      <div class="feature-icon mb-2">📊</div>
+      <h5>Personal Risk Score</h5>
+      <p class="text-muted small">Weighted scoring by data-class severity and breach recency.
+        Know your actual exposure level: low → critical.</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-glow p-4 h-100">
+      <div class="feature-icon mb-2">🍯</div>
+      <h5>Honeypot Canaries</h5>
+      <p class="text-muted small">Deploy decoy credentials. If a hacker tries to use them,
+        you get alerted instantly with their IP, geolocation &amp; anomaly analysis.</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-glow p-4 h-100">
+      <div class="feature-icon mb-2">🔑</div>
+      <h5>Password Leak Check</h5>
+      <p class="text-muted small">Uses Pwned Passwords k-anonymity API. Your password never
+        leaves your device in full — only a 5-char SHA-1 prefix is sent.</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-glow p-4 h-100">
+      <div class="feature-icon mb-2">👨‍👩‍👧‍👦</div>
+      <h5>Family Monitoring</h5>
+      <p class="text-muted small">Add multiple email accounts for family members or aliases.
+        Run breach checks on each and track history over time.</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card card-glow p-4 h-100">
+      <div class="feature-icon mb-2">🇮🇳</div>
+      <h5>India-Specific Feed</h5>
+      <p class="text-muted small">Curated breach intelligence for Indian services (MobiKwik,
+        BigBasket, Air India …) plus your rights under the DPDP Act 2023.</p>
+    </div>
+  </div>
+</div>
+</section>
+</body>
+</html>

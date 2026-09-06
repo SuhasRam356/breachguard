@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head><title>Data Broker Opt-Out Hub</title></head>
+<body>
+<section layout:fragment="content">
+<h2 class="mb-4">🧹 Data Broker Opt-Out Hub</h2>
+<p class="text-muted">People-search sites sell your personal information. Use these direct
+  opt-out links to request removal from each broker.</p>
+
+<table class="table">
+  <thead><tr><th>Broker</th><th>Difficulty</th><th>Time</th><th>Action</th></tr></thead>
+  <tbody>
+    <tr th:each="b : ${brokers}">
+      <td th:text="${b.get('name')}"></td>
+      <td>
+        <span th:if="${b.get('difficulty') == 'Easy'}" class="badge bg-success" th:text="${b.get('difficulty')}"></span>
+        <span th:if="${b.get('difficulty') == 'Medium'}" class="badge bg-warning" th:text="${b.get('difficulty')}"></span>
+        <span th:if="${b.get('difficulty') == 'Hard'}" class="badge bg-danger" th:text="${b.get('difficulty')}"></span>
+      </td>
+      <td th:text="${b.get('time')}"></td>
+      <td><a th:href="${b.get('url')}" target="_blank" class="btn btn-outline-light btn-sm">Opt out →</a></td>
+    </tr>
+  </tbody>
+</table>
+</section>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head><title>Email Breach Check</title></head>
+<body>
+<section layout:fragment="content">
+<h2 class="mb-4">🔍 Email Breach Check</h2>
+
+<form th:action="@{/check}" method="post" class="row g-2 mb-4">
+  <div class="col-md-8">
+    <input type="email" name="email" class="form-control form-control-lg"
+           placeholder="you@example.com" required th:value="${email}">
+  </div>
+  <div class="col-md-4">
+    <button class="btn btn-neon btn-lg w-100">Check breaches</button>
+  </div>
+</form>
+
+<!-- Results -->
+<div th:if="${result != null}">
+  <!-- Demo badge -->
+  <div th:if="${result.demo}" class="mb-3">
+    <span class="badge badge-demo">Demo data</span>
+    <small class="text-muted">Showing sample breaches for demonstration.</small>
+  </div>
+
+  <!-- Score ring -->
+  <div class="text-center mb-4">
+    <div class="score-ring" th:style="'border-color:' + ${result.levelColor} + '; color:' + ${result.levelColor}">
+      <span class="num" th:text="${result.score}"></span>
+      <span class="lbl">Risk Score</span>
+    </div>
+    <div class="mt-2" th:text="${result.levelLabel}"></div>
+    <small class="text-muted" th:text="'Based on ' + ${result.count} + ' breach(es)'"></small>
+    <span th:if="${result.resolvedCount > 0}" class="text-muted" th:text="' · ' + ${result.resolvedCount} + ' resolved'"></span>
+  </div>
+
+  <!-- Dark-web market value -->
+  <div th:if="${result.marketValue > 0}" class="card p-3 mb-3">
+    <strong>💰 Estimated dark-web market value of exposed data:</strong>
+    <span class="ms-2" th:text="'$' + ${#numbers.formatDecimal(result.marketValue, 1, 2)}"></span>
+  </div>
+
+  <!-- Attack chains -->
+  <div th:if="${result.attackChains != null and !result.attackChains.isEmpty()}" class="card p-3 mb-3">
+    <h6>⚡ Realistic Attack Chains</h6>
+    <ul class="mb-0">
+      <li th:each="chain : ${result.attackChains}">
+        <strong th:text="${chain.name}"></strong>: <span th:text="${chain.description}"></span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Breach list -->
+  <div th:each="b : ${result.breaches}" class="card p-3 mb-3 breach-item"
+       th:classappend="${b.resolved ? 'opacity-50' : ''}">
+    <div class="d-flex justify-content-between align-items-start">
+      <div>
+        <h5 th:text="${b.name}"></h5>
+        <small class="text-muted" th:text="${b.domain} + ' · ' + ${b.date}"></small>
+      </div>
+      <div class="text-end">
+        <span class="badge bg-secondary" th:text="${b.points} + ' pts'"></span>
+        <span th:if="${b.resolved}" class="badge bg-success">✅ Resolved</span>
+      </div>
+    </div>
+    <p class="small mt-2 mb-1" th:text="${b.description}"></p>
+    <div class="mt-1">
+      <span th:each="dc : ${b.dataClasses}" class="badge bg-dark me-1" th:text="${dc}"></span>
+    </div>
+
+    <!-- Remediation links -->
+    <div th:if="${b.remediation != null}" class="mt-2 small">
+      <a th:href="${b.remediation.get('reset')}" target="_blank" class="me-3">🔑 Reset password</a>
+      <a th:if="${b.remediation.get('twofa') != null and b.remediation.get('twofa')}"
+         th:href="${b.remediation.get('twofa_url')}" target="_blank">🔒 Enable 2FA</a>
+    </div>
+
+    <!-- Resolve button -->
+    <form th:if="${!b.resolved}" th:action="@{/resolve_breach}" method="post" class="mt-2">
+      <input type="hidden" name="account" th:value="${email}">
+      <input type="hidden" name="breachName" th:value="${b.name}">
+      <input type="hidden" name="email" th:value="${email}">
+      <button class="btn btn-outline-success btn-sm">✅ Mark as resolved</button>
+    </form>
+  </div>
+
+  <!-- Generic advice -->
+  <div class="card p-3 mt-4">
+    <h6>📋 General Security Advice</h6>
+    <ol class="mb-0 small">
+      <li th:each="tip : ${result.genericAdvice}" th:text="${tip}"></li>
+    </ol>
+    <p class="mt-2 small">Comprehensive 2FA directory: <a th:href="${result.twofaDirectory}" target="_blank">2fa.directory</a></p>
+  </div>
+
+  <p class="text-muted small mt-3" th:text="'Data source: ' + ${result.providerLabel}"></p>
+</div>
+</section>
+</body>
+</html>

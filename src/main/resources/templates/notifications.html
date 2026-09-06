@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head><title>Notifications</title></head>
+<body>
+<section layout:fragment="content">
+<h2 class="mb-4">🔔 Notifications</h2>
+
+<div th:if="${notifications.isEmpty()}" class="text-muted">No notifications yet.</div>
+
+<div th:each="n : ${notifications}" class="card p-3 mb-2">
+  <div class="d-flex justify-content-between">
+    <div>
+      <strong th:text="${n.title}"></strong>
+      <br><small class="text-muted" th:text="${n.body}"></small>
+    </div>
+    <div class="text-muted small text-end" th:text="${#temporals.format(n.createdAt, 'dd MMM yyyy HH:mm')}"></div>
+  </div>
+</div>
+</section>
+</body>
+</html>

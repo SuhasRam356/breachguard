@@ -1,0 +1,28 @@
+# Java
+*.class
+*.jar
+*.war
+target/
+build/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# H2 database files
+data/
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Python leftovers
+__pycache__/
+*.pyc
+.venv/
+instance/
+
+# OS
+.DS_Store
+Thumbs.db

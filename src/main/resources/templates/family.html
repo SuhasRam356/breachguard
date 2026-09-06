@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head><title>Family Monitoring</title></head>
+<body>
+<section layout:fragment="content">
+<h2 class="mb-4">👨‍👩‍👧‍👦 Family / Multi-Account Monitoring</h2>
+
+<form th:action="@{/family}" method="post" class="row g-2 mb-4">
+  <div class="col-md-5">
+    <input type="email" name="account" class="form-control" placeholder="family@example.com" required>
+  </div>
+  <div class="col-md-4">
+    <input type="text" name="label" class="form-control" placeholder="Label (e.g. Mom, Work)">
+  </div>
+  <div class="col-md-3">
+    <button class="btn btn-neon w-100">Add account</button>
+  </div>
+</form>
+
+<div th:if="${accounts.isEmpty()}" class="text-muted">No monitored accounts yet. Add one above.</div>
+
+<div th:each="acc : ${accounts}" class="card p-3 mb-3">
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <strong th:text="${acc.account}"></strong>
+      <span th:if="${acc.label != null and !acc.label.isEmpty()}" class="badge bg-secondary ms-2" th:text="${acc.label}"></span>
+      <br>
+      <small class="text-muted">
+        <span th:if="${acc.lastChecked != null}">
+          Last checked: <span th:text="${#temporals.format(acc.lastChecked, 'dd MMM yyyy HH:mm')}"></span>
+          · <span th:text="${acc.lastBreachCount}"></span> breach(es)
+        </span>
+        <span th:if="${acc.lastChecked == null}">Not checked yet</span>
+      </small>
+    </div>
+    <div>
+      <a th:href="@{/family/check/{id}(id=${acc.id})}" class="btn btn-outline-light btn-sm me-1">🔍 Check</a>
+      <form th:action="@{/family/delete/{id}(id=${acc.id})}" method="post" class="d-inline">
+        <button class="btn btn-outline-danger btn-sm">🗑 Remove</button>
+      </form>
+    </div>
+  </div>
+</div>
+</section>
+</body>
+</html>

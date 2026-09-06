@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head><title>Canary Tokens</title></head>
+<body>
+<section layout:fragment="content">
+<h2 class="mb-4">🍯 Honeypot Canary Tokens</h2>
+<p class="text-muted">Deploy decoy credentials on paste sites, dark-web forums, or leaked databases.
+  When an attacker tries to use them, you get notified instantly.</p>
+
+<div class="card card-glow p-4 mb-4">
+  <h5>Create a new canary</h5>
+  <form th:action="@{/honeypot}" method="post" class="row g-2">
+    <div class="col-md-3"><input type="text" name="label" class="form-control" placeholder="Label (e.g. LinkedIn trap)" required></div>
+    <div class="col-md-3"><input type="email" name="decoyEmail" class="form-control" placeholder="Decoy email" required></div>
+    <div class="col-md-3"><input type="text" name="decoyPassword" class="form-control" placeholder="Decoy password" required></div>
+    <div class="col-md-2"><input type="text" name="decoyNote" class="form-control" placeholder="Note (opt.)"></div>
+    <div class="col-md-1"><button class="btn btn-neon w-100">+</button></div>
+  </form>
+</div>
+
+<div th:if="${canaries.isEmpty()}" class="text-muted">No canaries yet. Create one above.</div>
+
+<div th:each="c : ${canaries}" class="card p-3 mb-3">
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <strong th:text="${c.label}"></strong>
+      <br><small class="text-muted" th:text="${c.decoyEmail}"></small>
+      <span class="badge bg-dark ms-2" th:text="${c.events.size()} + ' event(s)'"></span>
+    </div>
+    <div>
+      <a th:href="@{/honeypot/{id}(id=${c.id})}" class="btn btn-outline-light btn-sm">View details</a>
+    </div>
+  </div>
+</div>
+</section>
+</body>
+</html>

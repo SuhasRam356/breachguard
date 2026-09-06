@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head><title>India Breach Feed</title></head>
+<body>
+<section layout:fragment="content">
+<h2 class="mb-4">🇮🇳 India-Specific Breach Intelligence</h2>
+<p class="text-muted">Major breaches and ongoing threats affecting Indian users and services.</p>
+
+<div th:each="b : ${breaches}" class="card p-3 mb-3 breach-item">
+  <div class="d-flex justify-content-between align-items-start">
+    <div>
+      <h5 th:text="${b.get('name')}"></h5>
+      <small class="text-muted">
+        Year: <span th:text="${b.get('year')}"></span> ·
+        Affected: <span th:text="${b.get('users')}"></span> ·
+        Status: <span th:text="${b.get('status')}"></span>
+      </small>
+    </div>
+  </div>
+  <p class="small mt-2 mb-1" th:text="${b.get('summary')}"></p>
+  <div class="small"><strong>Data exposed:</strong> <span th:text="${b.get('data')}"></span></div>
+</div>
+
+<h4 class="mt-5 mb-3">📜 Your Rights Under the DPDP Act, 2023</h4>
+<div th:each="r : ${rights}" class="card p-3 mb-2">
+  <h6 th:text="${r[0]}"></h6>
+  <p class="small mb-0" th:text="${r[1]}"></p>
+</div>
+</section>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head><title>DPDP Erasure Letter</title></head>
+<body>
+<section layout:fragment="content">
+<h2 class="mb-4">📜 DPDP Act — Erasure / Grievance Letter Generator</h2>
+<p class="text-muted">Generate a formal letter demanding data erasure under India's
+  Digital Personal Data Protection Act, 2023.</p>
+
+<form th:action="@{/legal}" method="post" class="card card-glow p-4 mb-4">
+  <div class="row g-3">
+    <div class="col-md-4">
+      <label class="form-label">Your Name</label>
+      <input type="text" name="userName" class="form-control" th:value="${userName}" required>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Your Email</label>
+      <input type="email" name="userEmail" class="form-control" th:value="${userEmail}" required>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Your Phone (optional)</label>
+      <input type="text" name="userPhone" class="form-control" th:value="${userPhone}">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Company Name</label>
+      <input type="text" name="companyName" class="form-control" th:value="${companyName}" placeholder="e.g. MobiKwik">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Company/Grievance Email</label>
+      <input type="email" name="companyEmail" class="form-control" th:value="${companyEmail}" placeholder="grievance@company.com">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Breach Name</label>
+      <input type="text" name="breachName" class="form-control" th:value="${breachName}" placeholder="e.g. BigBasket 2020">
+    </div>
+    <div class="col-12">
+      <label class="form-label">Additional details (optional)</label>
+      <textarea name="details" class="form-control" rows="2" th:text="${details}"></textarea>
+    </div>
+    <div class="col-12">
+      <button class="btn btn-neon">Generate Letter</button>
+    </div>
+  </div>
+</form>
+
+<div th:if="${letter != null}">
+  <h5>Generated Letter</h5>
+  <pre class="letter" th:text="${letter}"></pre>
+  <p class="small text-muted">Copy this letter and send it to the company's grievance officer email.
+    Keep a copy for your records.</p>
+</div>
+</section>
+</body>
+</html>
