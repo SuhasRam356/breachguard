@@ -12,4 +12,6 @@ public interface HoneypotEventRepository extends JpaRepository<HoneypotEvent, Lo
     List<HoneypotEvent> findByUserId(Long userId);
 
     Optional<HoneypotEvent> findFirstByCanaryIdOrderByCreatedAtDesc(Long canaryId);
+    @Query("SELECT e.country, COUNT(e) FROM HoneypotEvent e GROUP BY e.country ORDER BY COUNT(e) DESC")
+    List<Object[]> findTopCountries();
 }

@@ -37,13 +37,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf
-                // Disable CSRF for the trap page (public endpoint for attackers)
-                .ignoringRequestMatchers("/honeypot/t/**")
+                // Disable CSRF for the trap page (public endpoint for attackers) and API
+                .ignoringRequestMatchers("/honeypot/t/**", "/api/**")
             )
             .authorizeHttpRequests(auth -> auth
-                // Public pages
-                .requestMatchers("/", "/register", "/login", "/india",
-                        "/honeypot/t/**", "/h2-console/**",
+                // Public pages and API
+                .requestMatchers("/", "/register", "/login", "/india", "/transparency",
+                        "/api/**", "/honeypot/t/**", "/h2-console/**",
                         "/static/**", "/css/**", "/js/**", "/style.css").permitAll()
                 // Everything else requires login
                 .anyRequest().authenticated()

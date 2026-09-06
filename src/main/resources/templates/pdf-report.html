@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>BreachGuard Export Report</title>
+    <style type="text/css">
+        body { font-family: sans-serif; margin: 40px; color: #333; }
+        h1 { color: #0056b3; }
+        h2 { border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+        .section { margin-bottom: 30px; }
+        .breach-item { margin-bottom: 20px; padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9; }
+        pre { background-color: #f4f4f4; padding: 15px; border: 1px solid #ddd; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-wrap: break-word; }
+        .footer { font-size: 10px; color: #777; margin-top: 50px; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>BreachGuard Export Report</h1>
+    <p>Generated on: <span th:text="${date}">2026-01-01</span></p>
+
+    <div class="section">
+        <h2>User Summary</h2>
+        <p><strong>Name:</strong> <span th:text="${user.name}">John Doe</span></p>
+        <p><strong>Email:</strong> <span th:text="${user.email}">john@example.com</span></p>
+        <p><strong>Risk Score:</strong> <span th:text="${riskScore}">50</span>/100</p>
+    </div>
+
+    <div class="section">
+        <h2>Monitored Accounts</h2>
+        <ul>
+            <li th:each="acc : ${monitoredAccounts}" th:text="${acc.accountName} + ' (' + ${acc.accountType} + ')'">Account</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Breach Highlights</h2>
+        <div th:each="breach : ${breaches}" class="breach-item">
+            <h3 th:text="${breach.Title}">Breach Title</h3>
+            <p><strong>Date:</strong> <span th:text="${breach.BreachDate}">2020-01-01</span></p>
+            <p><strong>Compromised Data:</strong> <span th:text="${#strings.listJoin(breach.DataClasses, ', ')}">Data</span></p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>DPDP Erasure Letter Sample</h2>
+        <pre th:text="${legalLetter}">Letter text goes here...</pre>
+    </div>
+
+    <div class="footer">
+        Generated securely by BreachGuard System.
+    </div>
+</body>
+</html>

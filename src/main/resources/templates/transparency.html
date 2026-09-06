@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html layout:decorate="~{base}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Global Transparency Report</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row align-items-center mb-4">
+        <div class="col-md-8">
+            <h1 class="fw-bold mb-0">Global Transparency Report</h1>
+            <p class="text-muted mt-2">Aggregate, anonymized data on attacks caught by the BreachGuard Honeypot Network.</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card stat-card border-0 shadow-sm h-100 p-3 bg-gradient">
+                <div class="card-body text-center">
+                    <h6 class="text-muted text-uppercase fw-bold mb-3">Total Canaries Deployed</h6>
+                    <h1 class="display-3 fw-bold text-primary mb-0" th:text="${totalCanaries}">0</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card stat-card border-0 shadow-sm h-100 p-3 bg-gradient">
+                <div class="card-body text-center">
+                    <h6 class="text-muted text-uppercase fw-bold mb-3">Total Attacks Caught</h6>
+                    <h1 class="display-3 fw-bold text-danger mb-0" th:text="${totalAttacks}">0</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
+            <h5 class="fw-bold mb-0">Top Attack Origins</h5>
+            <p class="text-muted small">Based on IP geolocation of attackers hitting the honeypots.</p>
+        </div>
+        <div class="card-body p-4">
+            <div th:if="${topCountries.empty}" class="text-center p-4">
+                <p class="text-muted mb-0">No attack data available yet.</p>
+            </div>
+            <div th:unless="${topCountries.empty}" class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Country</th>
+                        <th class="text-end">Attack Count</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="row : ${topCountries}">
+                        <td class="fw-bold" th:text="${row[0]}">Country</td>
+                        <td class="text-end text-danger fw-bold" th:text="${row[1]}">0</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

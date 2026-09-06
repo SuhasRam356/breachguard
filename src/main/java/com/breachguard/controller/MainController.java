@@ -11,6 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import java.time.Instant;
 import java.util.*;
@@ -30,6 +33,8 @@ public class MainController {
     private final RemediationService remediationService;
     private final ThreatIntelService threatService;
     private final LegalService legalService;
+    private final CanaryRepository canaryRepo;
+    private final PdfExportService pdfExportService;
 
     public MainController(UserRepository userRepo,
                           MonitoredAccountRepository monitoredRepo,
@@ -41,7 +46,9 @@ public class MainController {
                           PasswordCheckService passwordService,
                           RemediationService remediationService,
                           ThreatIntelService threatService,
-                          LegalService legalService) {
+                          LegalService legalService,
+                          CanaryRepository canaryRepo,
+                          PdfExportService pdfExportService) {
         this.userRepo = userRepo;
         this.monitoredRepo = monitoredRepo;
         this.notifRepo = notifRepo;
@@ -53,6 +60,8 @@ public class MainController {
         this.remediationService = remediationService;
         this.threatService = threatService;
         this.legalService = legalService;
+        this.canaryRepo = canaryRepo;
+        this.pdfExportService = pdfExportService;
     }
 
     private User getUser(UserDetails ud) {
@@ -347,5 +356,68 @@ public class MainController {
         );
         model.addAttribute("brokers", brokerList);
         return "brokers";
+    }
+    
+    // 📊 Transparency Page 📊
+    
+    @GetMapping("/transparency")
+    public String transparency(Model model) {
+        model.addAttribute("totalCanaries", canaryRepo.count());
+        model.addAttribute("totalAttacks", eventRepo.count());
+        model.addAttribute("topCountries", eventRepo.findTopCountries());
+        return "transparency";
+    }
+
+    // 📄 PDF Export 📄
+    @GetMapping("/export-report")
+    public ResponseEntity<byte[]> exportReport(@AuthenticationPrincipal UserDetails ud) {
+        User user = getUser(ud);
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        List<MonitoredAccount> accounts = monitoredRepo.findByUserId(user.getId());
+        List<BreachDto> allBreaches = new ArrayList<>();
+        for (MonitoredAccount acc : accounts) {
+            if ("Email".equalsIgnoreCase(acc.getAccountType())) {
+                allBreaches.addAll(breachService.checkEmailBreaches(acc.getAccountName()));
+            } else if ("Phone".equalsIgnoreCase(acc.getAccountType())) {
+                allBreaches.addAll(breachService.checkPhoneBreaches(acc.getAccountName()));
+            }
+        }
+        
+        List<ResolvedBreach> resolved = resolvedRepo.findByUserId(user.getId());
+        Set<String> resolvedNames = resolved.stream()
+                .map(ResolvedBreach::getBreachName)
+                .collect(Collectors.toSet());
+        
+        List<BreachDto> activeBreaches = allBreaches.stream()
+                .filter(b -> !resolvedNames.contains(b.Title))
+                .collect(Collectors.toList());
+
+        int riskScore = riskService.calculateRiskScore(activeBreaches, accounts.size());
+
+        String breachName = activeBreaches.isEmpty() ? "General" : activeBreaches.get(0).Title;
+        String legalLetter = legalService.buildErasureLetter(
+                user.getName(), user.getEmail(), "", "Data Controller", "privacy@example.com", breachName, ""
+        );
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("user", user);
+        variables.put("date", java.time.LocalDate.now().toString());
+        variables.put("riskScore", riskScore);
+        variables.put("monitoredAccounts", accounts);
+        variables.put("breaches", activeBreaches);
+        variables.put("legalLetter", legalLetter);
+
+        byte[] pdfBytes = pdfExportService.generatePdf("pdf-report", variables);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "BreachGuard_Report.pdf");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
     }
 }

@@ -27,7 +27,14 @@ public class PasswordCheckService {
             String sha1 = bytesToHex(hash).toUpperCase();
             String prefix = sha1.substring(0, 5);
             String suffix = sha1.substring(5);
+            return checkPasswordHash(prefix, suffix);
+        } catch (Exception e) {
+            return new PasswordResult(-1, false, "", "network");
+        }
+    }
 
+    public PasswordResult checkPasswordHash(String prefix, String suffix) {
+        try {
             HttpRequest req = HttpRequest.newBuilder()
                     .uri(URI.create("https://api.pwnedpasswords.com/range/" + prefix))
                     .header("User-Agent", "BreachGuard-StudentProject/1.0")
@@ -48,9 +55,8 @@ public class PasswordCheckService {
                 }
             }
             return new PasswordResult(0, false, prefix, null);
-
         } catch (Exception e) {
-            return new PasswordResult(-1, false, "", "network");
+            return new PasswordResult(-1, false, prefix, "network");
         }
     }
 
